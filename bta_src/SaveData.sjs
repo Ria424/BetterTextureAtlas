@@ -1,12 +1,10 @@
-SaveData = function() {}
+SaveData = function () { }
 
 SaveData.platform = fl.version.split(" ")[0];
 SaveData.version = fl.version.split(" ")[1].split(",");
 
-SaveData.setupSaves = function() 
-{
-    if (!FLfile.exists(fl.configURI + "Commands/bta_src/saveBTA.txt"))
-	{
+SaveData.setupSaves = function () {
+	if (!FLfile.exists(fl.configURI + "Commands/bta_src/saveBTA.txt")) {
 		var saveConfig = [
 			"", // pos
 			0, // ShpPad
@@ -19,8 +17,7 @@ SaveData.setupSaves = function()
 
 		FLfile.write(fl.configURI + "Commands/bta_src/saveBTA.txt", saveConfig.join("\n"));
 	}
-	if (!FLfile.exists(fl.configURI + "Commands/bta_src/saveADDBTA.txt"))
-	{
+	if (!FLfile.exists(fl.configURI + "Commands/bta_src/saveADDBTA.txt")) {
 		var save = [];
 
 		save[0] = inlineSym;
@@ -33,19 +30,16 @@ SaveData.setupSaves = function()
 }
 
 
-SaveData.openXMLFromString = function(rawXML)
-{
-	
+SaveData.openXMLFromString = function (rawXML) {
+
 	// Flash doesnt support direct panels from strings so we gotta create a temp xml
 	var xPan = null;
-	if (parseInt(SaveData.version[0]) < 15 && parseInt(SaveData.version[1]) < 1)
-	{
+	if (parseInt(SaveData.version[0]) < 15 && parseInt(SaveData.version[1]) < 1) {
 		var count = 1;
-		
+
 		var tempP = fl.configURI + "Commands/bta_src/_BTAD(" + count + ").xml";
 
-		while (FLfile.exists(tempP))
-		{
+		while (FLfile.exists(tempP)) {
 			count += 1;
 			tempP = fl.configURI + "Commands/bta_src/_BTAD(" + count + ").xml";
 		}
@@ -53,8 +47,7 @@ SaveData.openXMLFromString = function(rawXML)
 		xPan = fl.xmlPanel(tempP);
 		FLfile.remove(tempP);
 	}
-	else
-	{
+	else {
 		xPan = fl.xmlPanelFromString(rawXML);
 	}
 

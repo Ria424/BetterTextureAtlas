@@ -1,31 +1,28 @@
 <dialog title="Generate A Texture Atlas" buttons="accept">
 
-<label value="Additional Params"/>
+    <label value="Additional Params" />
 
-<radiogroup id="params" groupbox="true" >
-
-<grid>
-    <columns>
-        <column/>
-        <column/>
-        <column/>
-    </columns>
-    <rows>
-        <row>
-            <checkbox label="Inline Symbols" id="InSym" checked="$INSYMB"/>
-            <checkbox label="Bake All Texts" id="BATX" checked="$BATX"/>
-        </row>
-        <row>
-            <checkbox label="Include Sounds" checked="$INCS" id="INCS"/>
-            <checkbox label="Bake Filters" checked="$BF" id="BF"/>
-        </row>
-        <row>
-            <checkbox label="Bake One Frame Symbols" checked="$BOFS" id="BOFS" />
-            <checkbox label="Bake Tweens" checked="$BTW" id="BTW"/>
-        </row>
-    </rows>
-</grid>
-
-</radiogroup>
-
+    <radiogroup id="params" groupbox="true">
+        <grid>
+            <columns>
+                <column />
+                <column />
+                <column />
+            </columns>
+            <rows>
+                <row>
+                    <checkbox label="Inline Symbols" id="InSym" checked="$INSYMB" />
+                    <checkbox label="Bake All Texts" id="BATX" checked="$BATX" />
+                </row>
+                <row>
+                    <checkbox label="Include Sounds" checked="$INCS" id="INCS" />
+                    <checkbox label="Bake Filters" checked="$BF" id="BF" />
+                </row>
+                <row>
+                    <checkbox label="Bake One Frame Symbols" checked="$BOFS" id="BOFS" />
+                    <checkbox label="Bake Tweens" checked="$BTW" id="BTW" />
+                </row>
+            </rows>
+        </grid>
+    </radiogroup>
 </dialog>

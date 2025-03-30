@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "{*.jsfl,*.sjs}": "javascript",
+        "*.mxi": "xml"
+    }
+}

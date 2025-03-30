@@ -1,8 +1,8 @@
 ﻿var included = {};
-fl.include = function(file) {
+fl.include = function (file) {
 	if (included[file]) { return; }
-		included[file] = true;
-	eval(FLfile.read(fl.configURI+"Commands/bta_src/"+file+".sjs"));
+	included[file] = true;
+	eval(FLfile.read(fl.configURI + "Commands/bta_src/" + file + ".sjs"));
 }
 
 fl.include("SaveData");
@@ -51,22 +51,18 @@ var resScale = 1.0;
 if (SaveData.version[0] <= 12)
 	alert("WARNING: Even though it's functional, we still recommend using a newer version, such as Adobe Animate!");
 
-function _main()
-{
-	if (doc == null)
-	{
+function _main() {
+	if (doc == null) {
 		alert("You need to be in an document in order to export the atlas");
 		return;
 	}
 
-	var profileXML = fl.getDocumentDOM().exportPublishProfileString(); 
+	var profileXML = fl.getDocumentDOM().exportPublishProfileString();
 	onlyVisibleLayers = profileXML.split("<InvisibleLayer>")[1].charAt(0) == "0";
 
-	if (doc.selection.length > 0)
-	{
+	if (doc.selection.length > 0) {
 		var i = 0;
-		while (i < doc.selection.length)
-		{
+		while (i < doc.selection.length) {
 			var object = doc.selection[i];
 			if (object.elementType == "instance")
 				symbols.push(object.libraryItem.name);
@@ -75,15 +71,13 @@ function _main()
 			i++;
 		}
 	}
-	else if (lib.getSelectedItems().length > 0)
-	{
+	else if (lib.getSelectedItems().length > 0) {
 		var items = lib.getSelectedItems();
 		while (items.length > 0)
 			symbols.push(items.shift().name);
 	}
-	
-	if (symbols.length <= 0)
-	{
+
+	if (symbols.length <= 0) {
 		alert("No symbol has been selected");
 		return;
 	}
@@ -99,14 +93,12 @@ function _main()
 
 	var xPan = SaveData.openXMLFromString(rawXML);
 
-	if (xPan == null)
-	{
+	if (xPan == null) {
 		alert("ERROR: Failed loading XML Panel");
 		return;
 	}
-	
-	if (xPan.dismiss == "cancel")
-	{
+
+	if (xPan.dismiss == "cancel") {
 		trace("Operation cancelled");
 		return;
 	}
@@ -116,16 +108,14 @@ function _main()
 	var curFr = doc.getTimeline().currentFrame;
 	var n = "";
 
-	while (true)
-	{
+	while (true) {
 		n = doc.getTimeline().name;
 		doc.exitEditMode();
 
 		if (n == doc.timelines[0].name)
 			break;
 
-		if (doc.selection[0] != undefined)
-		{
+		if (doc.selection[0] != undefined) {
 			familySymbol.unshift(doc.selection[0]);
 			frs.unshift(doc.getTimeline().currentFrame);
 		}
@@ -149,15 +139,13 @@ function _main()
 	bakedFilters = dataAdd[4] == "true";
 	bakedTweens = dataAdd[5] == "true";
 
-	if (bakedTweens && flversion < 13)
-	{
+	if (bakedTweens && flversion < 13) {
 		bakedTweens = false;
 		trace("WARNING: Baked tweens is not supported on this flash version.\nTry using Flash Pro CC or newer.");
 	}
-	
+
 	var fileuri = xPan.saveBox.split("/").join("\\");
-	if (doc.path != null)
-	{
+	if (doc.path != null) {
 		var docarr = doc.path.split("\\");
 		docarr.pop();
 		if (fileuri.split("C:\\")[0] != "")
@@ -168,24 +156,23 @@ function _main()
 	optimizeJson = (optAn == "true");
 	flattenSkewing = (flatten == "true");
 	resolution = parseFloat(res);
-	resScale =  1 / resolution;
+	resScale = 1 / resolution;
 
 	// Reduce if statements
-	key = optimizeJson ? function (a, b) {return b} : function (a, b) {return a};
+	key = optimizeJson ? function (a, b) { return b } : function (a, b) { return a };
 
 	// First ask for the export folder
 	path = formatPath(fileuri);
 	FLfile.createFolder(path);
 
-	measure(function() {
-	exportAtlas(symbols);
+	measure(function () {
+		exportAtlas(symbols);
 	});
 
-	for (i = 0; i < familySymbol.length; i++)
-	{
+	for (i = 0; i < familySymbol.length; i++) {
 		doc.getTimeline().currentFrame = frs[i];
 		familySymbol[i].selected = true;
-		
+
 		if (doc.selection.length > 0)
 			doc.enterEditMode("inPlace");
 	}
@@ -218,8 +205,7 @@ var bakedTweenedFilters;
 
 _main();
 
-function initVars()
-{
+function initVars() {
 	SPRITEMAP_ID = "__BTA_TEMP_SPRITEMAP_";
 	TEMP_SPRITEMAP = SPRITEMAP_ID + "0";
 
@@ -240,19 +226,16 @@ function initVars()
 	flversion = parseInt(fl.version.split(" ")[1].split(",")[0]);
 }
 
-function exportAtlas(symbolNames)
-{
+function exportAtlas(symbolNames) {
 	initVars();
 
 	var tmpSymbol = false;
 	var symbol;
 
-	if (symbolNames.length == 1)
-	{
+	if (symbolNames.length == 1) {
 		symbol = findItem(symbolNames[0]);
 	}
-	else
-	{
+	else {
 		var containerID = SPRITEMAP_ID + "PACKED_SYMBOL";
 		symbol = initBtaItem(containerID);
 		lib.editItem(containerID);
@@ -262,8 +245,7 @@ function exportAtlas(symbolNames)
 		var i = 0;
 		var startIndex = 0;
 
-		while(i < symbolNames.length)
-		{
+		while (i < symbolNames.length) {
 			var tempName = symbolNames[i];
 			var frameCount = findItem(tempName).timeline.frameCount - 1;
 
@@ -273,7 +255,7 @@ function exportAtlas(symbolNames)
 
 			symbol.timeline.insertFrames(frameCount, false, startIndex);
 			symbol.timeline.currentFrame = startIndex;
-			lib.addItemToDocument({x: 0, y: 0}, tempName);
+			lib.addItemToDocument({ x: 0, y: 0 }, tempName);
 
 			startIndex += frameCount;
 			i++;
@@ -289,13 +271,12 @@ function exportAtlas(symbolNames)
 	TEMP_ITEM = initBtaItem(TEMP_SPRITEMAP);
 	TEMP_TIMELINE = TEMP_ITEM.timeline;
 	TEMP_LAYER = TEMP_TIMELINE.layers[0];
-	TEMP_TIMELINE.removeFrames(0,0);
+	TEMP_TIMELINE.removeFrames(0, 0);
 
 	ogSym = symbol;
 
 	// Failsafe for invalid export paths
-	if (path.indexOf("unknown|") !== -1)
-	{
+	if (path.indexOf("unknown|") !== -1) {
 		var defaultOutputFolder = fl.configURI + "Commands/bta_output";
 		FLfile.createFolder(defaultOutputFolder);
 
@@ -315,12 +296,11 @@ function exportAtlas(symbolNames)
 	TEMP_TIMELINE.currentLayer = 0;
 
 	var i = 0;
-	while (i < frameQueue.length)
-	{
+	while (i < frameQueue.length) {
 		var elemIndices = frameQueue[i];
 		var matrix = cachedMatrices[i];
 		var frame = TEMP_LAYER.frames[i];
-		
+
 		TEMP_TIMELINE.currentFrame = i;
 
 		if (flversion > 12 && doc.selection.length > 0)
@@ -329,23 +309,19 @@ function exportAtlas(symbolNames)
 		var selection = new Array();
 
 		// Remove frame filters (only from Animate 2020 upwards)
-		if (flversion >= 20)
-		{
-			if (!bakedFilters && TEMP_LAYER.setFiltersAtFrame != undefined)
-			{
+		if (flversion >= 20) {
+			if (!bakedFilters && TEMP_LAYER.setFiltersAtFrame != undefined) {
 				TEMP_LAYER.setFiltersAtFrame(i, new Array(0));
 			}
 		}
 
 		var e = 0;
 		var elements = frame.elements;
-		while (e < elements.length)
-		{
+		while (e < elements.length) {
 			var element = elements[e];
 			var exportElem = elemIndices.indexOf(e) !== -1;
 
-			if (exportElem)
-			{
+			if (exportElem) {
 				// TODO: reimplement baked skews
 				element.rotation = 0;
 				element.skewX = 0;
@@ -359,9 +335,8 @@ function exportAtlas(symbolNames)
 
 				var tweenFilters = bakedTweenedFilters[i];
 				var filters = tweenFilters != null ? tweenFilters : element.filters;
-						
-				if (filters != undefined && filters.length > 0)
-				{
+
+				if (filters != undefined && filters.length > 0) {
 					var isScaled =
 						(Math.floor(matrix.a * 100) != Math.floor(element.matrix.a * 100)) ||
 						(Math.floor(matrix.d * 100) != Math.floor(element.matrix.d * 100));
@@ -371,36 +346,31 @@ function exportAtlas(symbolNames)
 						element.scaleY = 1 / matrix.d;
 					}
 
-					if (bakedFilters)
-					{
-						if (isScaled || tweenFilters != null)
-						{
+					if (bakedFilters) {
+						if (isScaled || tweenFilters != null) {
 							doc.selection = [element];
-		
+
 							if (isScaled) {
 								forEachFilter(filters, function (filter) {
-									switch (filter.name)
-									{
+									switch (filter.name) {
 										case "glowFilter":
 										case "blurFilter":
 											filter.blurX /= matrix.a;
 											filter.blurY /= matrix.d;
-										break;
+											break;
 									}
 								});
 							}
-		
+
 							doc.setFilters(filters);
 						}
 					}
-					else
-					{
+					else {
 						doc.selection = [element];
 						doc.setFilters(new Array(0));
 					}
 				}
-				else
-				{
+				else {
 					// Round the pixel for antialiasing reasons
 					var targetX = Math.floor(element.width / matrix.a) / element.width;
 					var targetY = Math.floor(element.height / matrix.d) / element.height;
@@ -409,23 +379,19 @@ function exportAtlas(symbolNames)
 					element.scaleY = targetY;
 				}
 			}
-			else
-			{
+			else {
 				selection[selection.length] = element;
 			}
 
 			e++;
 		}
 
-		if (selection.length > 0)
-		{
-			if (flversion > 12)
-			{
+		if (selection.length > 0) {
+			if (flversion > 12) {
 				doc.selection = selection;
 				doc.deleteSelection();
 			}
-			else
-			{
+			else {
 				doc.selectNone();
 				var s = 0;
 				while (s < selection.length)
@@ -436,7 +402,7 @@ function exportAtlas(symbolNames)
 
 		i++;
 	}
-	
+
 	if (flversion < 12) // Super primitive spritemap export for versions below CS6
 	{
 		var shapeLength = TEMP_TIMELINE.frameCount;
@@ -458,7 +424,7 @@ function exportAtlas(symbolNames)
 
 		if (FLfile.exists(smPath + ".png"))
 			FLfile.remove(smPath + ".png");
-		
+
 		doc.exportPNG(smPath, true, true);
 		renameFile(smPath + "img.png", smPath + ".png");
 
@@ -480,7 +446,7 @@ function exportAtlas(symbolNames)
 		var sm = makeSpritemap();
 		sm.addSymbol(TEMP_ITEM);
 
-		var smData = {sm: sm, index:0};
+		var smData = { sm: sm, index: 0 };
 		spritemaps = [smData];
 
 		// Divide Spritemap if overflowed
@@ -504,8 +470,7 @@ function exportAtlas(symbolNames)
 	trace("Exported to folder: " + path);
 }
 
-function cleanElement(elem)
-{
+function cleanElement(elem) {
 	elem.scaleX = elem.scaleY = 1;
 
 	if (flattenSkewing)
@@ -515,10 +480,8 @@ function cleanElement(elem)
 	elem.skewX = elem.skewY = 0;
 }
 
-function initBtaItem(ID)
-{
-	if (lib.itemExists(ID))
-	{
+function initBtaItem(ID) {
+	if (lib.itemExists(ID)) {
 		trace("WARNING: removing " + ID + " item");
 		lib.deleteItem(ID);
 	}
@@ -529,14 +492,12 @@ function initBtaItem(ID)
 
 var spritemaps;
 
-function divideSpritemap(smData, symbol)
-{
+function divideSpritemap(smData, symbol) {
 	var parent = smData.sm;
 	var framesLength = symbol.timeline.layers[0].frames.length;
 	var cutFrames = Math.floor(framesLength * 0.5);
 
-	if (framesLength === 1)
-	{
+	if (framesLength === 1) {
 		alert("ERROR: A shape couldn't fit inside the spritemap");
 		return;
 	}
@@ -550,7 +511,7 @@ function divideSpritemap(smData, symbol)
 	symbol.timeline.removeFrames(cutFrames, framesLength);
 
 	var nextSm = makeSpritemap();
-	var nextSmData = {sm: nextSm, index: cutFrames + smData.index};
+	var nextSmData = { sm: nextSm, index: cutFrames + smData.index };
 	spritemaps.push(nextSmData);
 	nextSm.addSymbol(nextSmSymbol);
 
@@ -566,10 +527,9 @@ function divideSpritemap(smData, symbol)
 	}
 }
 
-function exportSpritemap(id, exportPath, smData, index)
-{
+function exportSpritemap(id, exportPath, smData, index) {
 	var smPath = exportPath + "/spritemap" + index;
-	var smSettings = {format: "png", bitDepth: bitDepth, backgroundColor: "#00000000"};
+	var smSettings = { format: "png", bitDepth: bitDepth, backgroundColor: "#00000000" };
 	var sm = smData.sm;
 
 	sm.exportSpriteSheet(smPath, smSettings, true);
@@ -586,8 +546,7 @@ function exportSpritemap(id, exportPath, smData, index)
 
 		var i = 0;
 		var l = atlasLimbs.length;
-		while (i < l)
-		{
+		while (i < l) {
 			var limbData = atlasLimbs[i++].split("{").join("").split("}").join("").split("\n");
 			var splitFrame = limbData[1].substring(8).split(",");
 
@@ -603,13 +562,11 @@ function exportSpritemap(id, exportPath, smData, index)
 		sm.autoSize = false;
 		sm.sheetWidth = smWidth + BrdPad;
 		sm.sheetHeight = smHeight + BrdPad;
-		
-		if (sm.overflowed)
-		{
+
+		if (sm.overflowed) {
 			break;
 		}
-		else
-		{
+		else {
 			sm.exportSpriteSheet(smPath, smSettings, true);
 		}
 	}
@@ -622,8 +579,7 @@ function exportSpritemap(id, exportPath, smData, index)
 	var smJson = ['{"ATLAS":{"SPRITES":[\n'];
 
 	var l = 0;
-	while (l < atlasLimbs.length)
-	{
+	while (l < atlasLimbs.length) {
 		var limbData = atlasLimbs[l].split("\n");
 
 		var name = parseInt(formatLimbName(limbData[0].slice(0, -2))) + smData.index;
@@ -637,7 +593,7 @@ function exportSpritemap(id, exportPath, smData, index)
 		frameValues[2] = '"w":' + (parseInt(frameValues[2].substring(4, frameValues[2].length)) + 1);
 		frameValues[3] = '"h":' + (parseInt(frameValues[3].substring(4, frameValues[3].length)) + 1);
 
-		smJson.push('{"SPRITE":{"name":"' +  name + '",' + frameValues.join(",") + ',' + rotated + '}}');
+		smJson.push('{"SPRITE":{"name":"' + name + '",' + frameValues.join(",") + ',' + rotated + '}}');
 		if (l < atlasLimbs.length - 1) smJson.push(',\n');
 		l++;
 	}
@@ -664,8 +620,7 @@ function makeSpritemap() {
 	return sm;
 }
 
-function generateAnimation(symbol)
-{
+function generateAnimation(symbol) {
 	initJson();
 	push("{\n");
 
@@ -689,32 +644,28 @@ function generateAnimation(symbol)
 	var animJson;
 
 	// Add Symbol Dictionary
-	if (dictionary.length > 0 || bakedDictionary.length > 0)
-	{
-		if (inlineSym)
-		{
+	if (dictionary.length > 0 || bakedDictionary.length > 0) {
+		if (inlineSym) {
 			push(',\n');
 			jsonHeader(key("SYMBOL_DICTIONARY", "SD"));
-			jsonArray(key ("Symbols", "S"));
+			jsonArray(key("Symbols", "S"));
 
 			var dictIndex = 0;
-			while (dictIndex < dictionary.length)
-			{
+			while (dictIndex < dictionary.length) {
 				var symbol = findItem(dictionary[dictIndex++]);
 				curSymbol = symbol.name;
 				if (curSymbol == ogSym.name)
 					continue;
-				
+
 				push('{\n');
 				jsonStr(key("SYMBOL_name", "SN"), curSymbol);
 				jsonHeader(key("TIMELINE", "TL"));
 				parseSymbol(symbol);
 				push('},');
 			}
-			
+
 			dictIndex = 0;
-			while (dictIndex < bakedDictionary.length)
-			{
+			while (dictIndex < bakedDictionary.length) {
 				push(bakedDictionary[dictIndex++].json);
 				push(',');
 			}
@@ -722,38 +673,34 @@ function generateAnimation(symbol)
 			removeTrail(1);
 			push(']}');
 		}
-		else
-		{
+		else {
 			push("}");
 			animJson = closeJson();
 
 			FLfile.createFolder(path + "/LIBRARY");
 
-			var pushSymbolLibrary = function (symbolName, jsonContent)
-			{
+			var pushSymbolLibrary = function (symbolName, jsonContent) {
 				var pathDict = symbolName.split("/");
 				var folderStuff = "";
 				var foldI = 0;
-				
-				while (foldI < pathDict.length - 1)
-				{
+
+				while (foldI < pathDict.length - 1) {
 					if (folderStuff != "") folderStuff += "/";
 					folderStuff += pathDict[foldI];
 					FLfile.createFolder(path + "/LIBRARY/" + folderStuff);
 					foldI++;
 				}
-	
+
 				FLfile.write(path + "/LIBRARY/" + symbolName + ".json", jsonContent);
 			}
 
 			var dictIndex = 0;
-			while (dictIndex < dictionary.length)
-			{
+			while (dictIndex < dictionary.length) {
 				var symbol = findItem(dictionary[dictIndex++]);
 				curSymbol = symbol.name;
 				if (curSymbol == ogSym.name)
 					continue;
-				
+
 				initJson();
 				push("{");
 				push(parseSymbol(symbol));
@@ -761,8 +708,7 @@ function generateAnimation(symbol)
 			}
 
 			dictIndex = 0;
-			while (dictIndex < bakedDictionary.length)
-			{
+			while (dictIndex < bakedDictionary.length) {
 				var symbol = bakedDictionary[dictIndex++];
 				pushSymbolLibrary(symbol.name, symbol.json);
 			}
@@ -770,16 +716,14 @@ function generateAnimation(symbol)
 	}
 
 	// Add Metadata
-	if (inlineSym)
-	{
+	if (inlineSym) {
 		push(",\n");
 		jsonHeader(key("metadata", "MD"));
 		metadata();
 		push('}}');
 		animJson = closeJson();
 	}
-	else
-	{		
+	else {
 		initJson();
 		push("{\n");
 		metadata();
@@ -791,14 +735,12 @@ function generateAnimation(symbol)
 	return animJson;
 }
 
-function metadata()
-{
+function metadata() {
 	jsonStr(key("version", "V"), BTA_version);
 	jsonVarEnd(key("framerate", "FRT"), doc.frameRate);
 }
 
-function pushOneFrameSymbol(symbolInstance, timeline, layerIndex, frameIndex, elemIndex)
-{
+function pushOneFrameSymbol(symbolInstance, timeline, layerIndex, frameIndex, elemIndex) {
 	var item = symbolInstance.libraryItem;
 	var name = item.name;
 
@@ -813,8 +755,7 @@ function pushOneFrameSymbol(symbolInstance, timeline, layerIndex, frameIndex, el
 
 var cachedOneFrames;
 
-function isOneFrame(itemTimeline)
-{
+function isOneFrame(itemTimeline) {
 	if (!bakeOneFR)
 		return false;
 
@@ -825,19 +766,16 @@ function isOneFrame(itemTimeline)
 
 	var result = false;
 	var layers = itemTimeline.layers;
-	
+
 	if (itemTimeline.frameCount === 1) // Basic one frame check
-	{	
-		if (itemTimeline.layerCount == 1)
-		{
+	{
+		if (itemTimeline.layerCount == 1) {
 			var frame = layers[0].frames[0];
 			result = (frame.elements.length > 1);
-			
-			if (!result && (frame.elements.length == 1))
-			{
+
+			if (!result && (frame.elements.length == 1)) {
 				var elem = frame.elements[0];
-				if (elem.elementType == "instance")
-				{
+				if (elem.elementType == "instance") {
 					if (elem.instanceType == "symbol")
 						result = (elem.blendMode == "normal");
 					else if (elem.instanceType == "bitmap") // skip bitmaps getting upscaled / duplicated
@@ -845,8 +783,7 @@ function isOneFrame(itemTimeline)
 				}
 			}
 		}
-		else
-		{
+		else {
 			result = true;
 		}
 	}
@@ -860,16 +797,13 @@ function isOneFrame(itemTimeline)
 	return result;
 }
 
-function isBakeableTimeline(targetKeyframe, timeline)
-{
+function isBakeableTimeline(targetKeyframe, timeline) {
 	var l = 0;
 	var layers = timeline.layers;
-	while (l < layers.length)
-	{
+	while (l < layers.length) {
 		var layer = layers[l++];
 		var f = 0;
-		while (f < layer.frames.length)
-		{
+		while (f < layer.frames.length) {
 			var frame = layer.frames[f++];
 
 			// Has more than one keyframe
@@ -879,12 +813,11 @@ function isBakeableTimeline(targetKeyframe, timeline)
 			var e = 0;
 			while (e < frame.elements.length) {
 				var element = frame.elements[e++];
-				if (element.elementType == "instance" && element.instanceType == "symbol")
-				{
+				if (element.elementType == "instance" && element.instanceType == "symbol") {
 					// Has blend mode filter, dont bake
 					if (element.blendMode != "normal")
 						return false;
-					
+
 					// Check if element can be cached in one frame
 					if (element.symbolType == "graphic") {
 						if (!isOneFrame(element.libraryItem.timeline))
@@ -898,15 +831,13 @@ function isBakeableTimeline(targetKeyframe, timeline)
 	return true;
 }
 
-function parseSymbol(symbol)
-{
+function parseSymbol(symbol) {
 	var timeline = symbol.timeline;
 	var layers = timeline.layers;
 
 	jsonArray(key("LAYERS", "L"));
 
-	if (isOneFrame(timeline) && oneFrameSymbols[symbol.name] != null)
-	{
+	if (isOneFrame(timeline) && oneFrameSymbols[symbol.name] != null) {
 		makeBasicLayer(function () {
 			var index = oneFrameSymbols[symbol.name];
 			var bounds = getFrameBounds(timeline, 0);
@@ -920,47 +851,43 @@ function parseSymbol(symbol)
 	}
 
 	var l = 0;
-	while (l < layers.length)
-	{
+	while (l < layers.length) {
 		var layer = layers[l];
 		var layerType = layer.layerType;
 
-		if ((layer.visible || !onlyVisibleLayers) && layer.frameCount > 0 && layerType != "guide" && layerType != "guided")
-		{
+		if ((layer.visible || !onlyVisibleLayers) && layer.frameCount > 0 && layerType != "guide" && layerType != "guided") {
 			var lockedLayer = layer.locked;
 			layer.locked = false;
 
 			push('{\n');
 			jsonStr(key("Layer_name", "LN"), layer.name);
 
-			switch (layerType)
-			{
+			switch (layerType) {
 				case "mask":
 					jsonStr(key("Layer_type", "LT"), key("Clipper", "Clp"));
-				if (layer.parentLayer != undefined)
+					if (layer.parentLayer != undefined)
 						jsonStr(key("Parent_layer", "PL"), layer.parentLayer.name);
-				break;
+					break;
 				case "masked":
 					jsonStr(key("Clipped_by", "Clpb"), layer.parentLayer.name);
 
-				break;
+					break;
 				case "folder":
-					
-					if (layer.parentLayer != undefined)
-					{
+
+					if (layer.parentLayer != undefined) {
 						jsonStr(key("Layer_type", "LT"), key("Folder", "Fld"));
 						jsonStrEnd(key("Parent_layer", "PL"), layer.parentLayer.name);
 					}
 					else
 						jsonStrEnd(key("Layer_type", "LT"), key("Folder", "Fld"));
-				break;
+					break;
 				// not planning on adding these
 				case "guide":
 				case "guided":
 				case "normal":
 					if (layer.parentLayer != undefined)
 						jsonStr(key("Parent_layer", "PL"), layer.parentLayer.name);
-				break;
+					break;
 			}
 
 			if (layerType != "folder") {
@@ -993,24 +920,21 @@ function makeBasicLayer(elementCallback) {
 	push('}]}]}]}');
 }
 
-function parseFrames(frames, layerIndex, timeline)
-{
+function parseFrames(frames, layerIndex, timeline) {
 	jsonArray(key("Frames", "FR"));
 
 	var layer = timeline.layers[layerIndex];
 	var hasRig = (flversion >= 20) && (layer.getRigParentAtFrame(0) != undefined);
 
 	var f = 0;
-	while (f < frames.length)
-	{
+	while (f < frames.length) {
 		var frame = frames[f];
 		var isKeyframe = (f === frame.startFrame);
 		var isTweenedFrame = (frame.tweenType != "none"); // TODO: implement shape tweens
 		var canBeBaked = bakedTweens && isTweenedFrame && frame.tweenObj != null;
-		
+
 		// setup for baked tweens crap
-		if (curTweenFrame > -1)
-		{
+		if (curTweenFrame > -1) {
 			curTweenMatrix = null;
 			curTweenShape = null;
 			curTweenColorTransform = null;
@@ -1018,26 +942,22 @@ function parseFrames(frames, layerIndex, timeline)
 			curTweenFrame = -1;
 		}
 
-		if (isKeyframe || (isTweenedFrame && bakedTweens))
-		{
+		if (isKeyframe || (isTweenedFrame && bakedTweens)) {
 			push('{\n');
 
 			if (frame.name.length > 0)
 				jsonStr(key("name", "N"), frame.name);
 
-			if (isTweenedFrame && !bakedTweens)
-			{
+			if (isTweenedFrame && !bakedTweens) {
 				jsonHeader(key("tween", "TWN"));
 
 				var isCubic = frame.getCustomEase() != null;
 
-				if (isCubic)
-				{
+				if (isCubic) {
 					jsonArray(key("curve", "CV"));
 					var e = 0;
 					var eases = frame.getCustomEase();
-					while (e < eases.length)
-					{
+					while (e < eases.length) {
 						var field = eases[e++];
 						push("{");
 						jsonVar("x", field.x);
@@ -1047,61 +967,57 @@ function parseFrames(frames, layerIndex, timeline)
 
 					if (eases.length > 0)
 						removeTrail(2);
-					
+
 					push("],\n");
 				}
-				else
-				{
+				else {
 					jsonVar(key("ease", "ES"), frame.tweenEasing);
 				}
 
-				switch (frame.tweenType)
-				{
+				switch (frame.tweenType) {
 					case "motion": // "classic"
-					jsonStr(key("type", "T"), key("motion", "MT"));
-					jsonStr(key("rotate", "RT"), frame.motionTweenRotate);
-					jsonVar(key("rotateTimes", "RTT"), frame.motionTweenRotateTimes);
-					jsonVar(key("scale", "SL"), frame.motionTweenScale);
-					jsonVar(key("snap", "SP"), frame.motionTweenSnap);
-					jsonVarEnd(key("sync", "SC"), frame.motionTweenSync);
-					break;
+						jsonStr(key("type", "T"), key("motion", "MT"));
+						jsonStr(key("rotate", "RT"), frame.motionTweenRotate);
+						jsonVar(key("rotateTimes", "RTT"), frame.motionTweenRotateTimes);
+						jsonVar(key("scale", "SL"), frame.motionTweenScale);
+						jsonVar(key("snap", "SP"), frame.motionTweenSnap);
+						jsonVarEnd(key("sync", "SC"), frame.motionTweenSync);
+						break;
 					case "motion object":
-					jsonStr(key("type", "T"), key("motion_OBJECT", "MTO"));
-					parseMotionObject(xmlToObject(frame.getMotionObjectXML()));
-					break;
+						jsonStr(key("type", "T"), key("motion_OBJECT", "MTO"));
+						parseMotionObject(xmlToObject(frame.getMotionObjectXML()));
+						break;
 					case "shape":
-					jsonStrEnd(key("type", "T"), key("shape", "SHP"));
-					break;
+						jsonStrEnd(key("type", "T"), key("shape", "SHP"));
+						break;
 					case "IK pose":
 						removeTrail(2); // TODO: look where the IK pose tween variables are stored
-					break;
-				}	
+						break;
+				}
 
 				push("},\n");
 			}
-			else if (canBeBaked)
-			{
+			else if (canBeBaked) {
 				setupBakedTween(frame, f);
 			}
 
-			if (includeSnd && frame.soundLibraryItem != null)
-			{
+			if (includeSnd && frame.soundLibraryItem != null) {
 				FLfile.createFolder(path + "/LIBRARY");
 				var ext = ".mp3";
 				if (frame.soundLibraryItem.originalCompressionType == "RAW")
 					ext = ".wav";
-				
+
 				var fileName = frame.soundLibraryItem.name;
 				if (fileName.indexOf(ext) === -1)
 					fileName += ext;
-				
+
 				frame.soundLibraryItem.exportToFile(path + "/LIBRARY/" + fileName);
 				jsonHeader(key("Sound", "SND"));
 
 				jsonStr(key("name", "N"), fileName);
 				jsonStr(key("Sync", "SNC"), frame.soundSync);
 				jsonStr(key("Loop", "LP"), frame.soundLoopMode);
-				
+
 				if (frame.soundLoopMode == "repeat")
 					jsonVarEnd(key("Repeat", "RP"), frame.soundLoop);
 				else
@@ -1111,12 +1027,10 @@ function parseFrames(frames, layerIndex, timeline)
 
 			jsonVar(key("index", "I"), f);
 			jsonVar(key("duration", "DU"), canBeBaked ? 1 : frame.duration);
-			
-			if (!bakedFilters)
-			{
+
+			if (!bakedFilters) {
 				var frameFilters = getFrameFilters(timeline.layers[layerIndex], f);
-				if (frameFilters.length > 0)
-				{
+				if (frameFilters.length > 0) {
 					parseFilters(frameFilters);
 					removeTrail(1);
 					push(",");
@@ -1136,8 +1050,7 @@ function parseFrames(frames, layerIndex, timeline)
 
 // This is what pain looks like
 // I hope adobe burns to the ground for only allowing this data as a xml
-function parseMotionObject(motionData)
-{
+function parseMotionObject(motionData) {
 	// Time Map
 	var timemap = motionData.TimeMap;
 	jsonHeader(key("timeMap", "TM"));
@@ -1150,8 +1063,7 @@ function parseMotionObject(motionData)
 	jsonArray(key("propertyContainer", "PC"));
 
 	var c = 0;
-	while (c < propCont.length)
-	{
+	while (c < propCont.length) {
 		// only output changed containers
 		var cont = propCont[c++];
 		if (cont.Property == undefined)
@@ -1162,8 +1074,7 @@ function parseMotionObject(motionData)
 		jsonArray(key("properties", "P"));
 
 		var p = 0;
-		while (p < cont.Property.length)
-		{
+		while (p < cont.Property.length) {
 			// only output changed properties
 			var prop = cont.Property[p++];
 			if (!isArray(prop.Keyframe))
@@ -1174,8 +1085,7 @@ function parseMotionObject(motionData)
 			jsonArray(key("Keyframes", "KFR"));
 
 			var kf = 0;
-			while (kf < prop.Keyframe.length)
-			{
+			while (kf < prop.Keyframe.length) {
 				var keyframe = prop.Keyframe[kf++];
 				push("{\n");
 				jsonVar(key("anchor", "ANC"), "[" + keyframe.anchor + "]");
@@ -1192,7 +1102,7 @@ function parseMotionObject(motionData)
 		removeTrail(1);
 		push("]},");
 	}
-	
+
 	removeTrail(1);
 	push("]\n");
 }
@@ -1206,32 +1116,27 @@ var curTweenFilters;
 var curTweenShape;
 var curTweenFrame;
 
-function setupBakedTween(frame, frameIndex)
-{
+function setupBakedTween(frame, frameIndex) {
 	var tweenType = frame.tweenType;
 	var frameOffset = (frameIndex - frame.startFrame);
-	
+
 	curTweenFrame = frameOffset;
 
-	if (tweenType !== "shape")
-	{
+	if (tweenType !== "shape") {
 		curTweenMatrix = frame.tweenObj.getGeometricTransform(frameOffset);
 		curTweenColorTransform = frame.tweenObj.getColorTransform(frameOffset);
 		curTweenFilters = frame.tweenObj.getFilters(frameOffset);
 	}
-	else
-	{
+	else {
 		curTweenShape = frame.tweenObj.getShape(frameOffset);
 	}
 }
 
-function drawShape(shape)
-{
+function drawShape(shape) {
 
 }
 
-function parseElements(elements, frameIndex, layerIndex, timeline)
-{
+function parseElements(elements, frameIndex, layerIndex, timeline) {
 	jsonArray(key("elements", "E"));
 
 	var e = 0;
@@ -1240,25 +1145,22 @@ function parseElements(elements, frameIndex, layerIndex, timeline)
 
 	var frameFilters = getFrameFilters(layer, frameIndex);
 	var hasFrameFilters = (bakedFilters && frameFilters.length > 0);
-	
+
 	var animType = layer.animationType;
 	if (animType == null)
 		animType = "none"; // IK pose
 
-	while (e < elements.length)
-	{
+	while (e < elements.length) {
 		var element = elements[e];
 		var elementType = element.elementType;
 		var isShape = (elementType == "shape");
-		
+
 		if (isShape) // Adobe sometimes forgets how their own software works
 		{
 			shapeQueue.push(e);
 		}
-		else
-		{
-			if (shapeQueue.length > 0)
-			{
+		else {
+			if (shapeQueue.length > 0) {
 				push("{");
 				parseShape(timeline, layerIndex, frameIndex, shapeQueue)
 				push("},\n");
@@ -1268,78 +1170,69 @@ function parseElements(elements, frameIndex, layerIndex, timeline)
 			push("{");
 		}
 
-		switch (element.elementType)
-		{
+		switch (element.elementType) {
 			case "instance":
 				switch (element.instanceType) {
 					case "symbol":
 
-					var hasFilters = element.filters != undefined && element.filters.length > 0;
-					var bakeInstanceFilters = (bakedFilters && (hasFilters || hasFrameFilters));
-					var bakeInstanceSkew = (flattenSkewing && (element.skewX != 0 || element.skewY != 0));
-					var bakeInstance = (bakeInstanceFilters || bakeInstanceSkew);
-					
-					if (bakeInstance)
-					{
-						pushElementSpritemap(timeline, layerIndex, frameIndex, [e], frameFilters);
-					}
-					else
-					{
-						if (isOneFrame(element.libraryItem.timeline) && animType == "none")
-						{
-							pushOneFrameSymbol(element, timeline, layerIndex, frameIndex, e);
+						var hasFilters = element.filters != undefined && element.filters.length > 0;
+						var bakeInstanceFilters = (bakedFilters && (hasFilters || hasFrameFilters));
+						var bakeInstanceSkew = (flattenSkewing && (element.skewX != 0 || element.skewY != 0));
+						var bakeInstance = (bakeInstanceFilters || bakeInstanceSkew);
+
+						if (bakeInstance) {
+							pushElementSpritemap(timeline, layerIndex, frameIndex, [e], frameFilters);
+						}
+						else {
+							if (isOneFrame(element.libraryItem.timeline) && animType == "none") {
+								pushOneFrameSymbol(element, timeline, layerIndex, frameIndex, e);
+							}
+
+							parseSymbolInstance(element);
 						}
 
-						parseSymbolInstance(element);
-					}
-
-					break;
+						break;
 					case "bitmap":
 						parseBitmapInstance(element, timeline, layerIndex, frameIndex, e);
-					break;
+						break;
 					// TODO: add missing element instance types
 					case "embedded video": break;
 					case "linked video": break;
 					case "video": break;
 					case "compiled clip": break;
 				}
-			break;
+				break;
 			case "text":
-				switch (element.textType)
-				{
+				switch (element.textType) {
 					case "static": // TODO: add missing text types
-					case "dynamic": 
+					case "dynamic":
 					case "input":
-						if (!element.useDeviceFonts || bakeTexts)
-						{
+						if (!element.useDeviceFonts || bakeTexts) {
 							pushElementSpritemap(timeline, layerIndex, frameIndex, [e], frameFilters);
 						}
-						else
-						{
+						else {
 							parseTextInstance(element);
 						}
-					break;
+						break;
 				}
-			break;
+				break;
 			// TODO: add missing (deprecated) element types
-			case "tlfText": 	break;
-			case "shapeObj": 	break;
+			case "tlfText": break;
+			case "shapeObj": break;
 		}
 
 		if (!isShape)
-			push((e < elements.length -1) ? "},\n" : "}");
+			push((e < elements.length - 1) ? "},\n" : "}");
 
 		e++;
 	}
 
 	if (shapeQueue.length > 0) {
 		push("{");
-		if (hasFrameFilters && bakedFilters)
-		{
+		if (hasFrameFilters && bakedFilters) {
 			pushElementSpritemap(timeline, layerIndex, frameIndex, shapeQueue, frameFilters);
 		}
-		else
-		{
+		else {
 			parseShape(timeline, layerIndex, frameIndex, shapeQueue);
 		}
 		push("}");
@@ -1348,46 +1241,41 @@ function parseElements(elements, frameIndex, layerIndex, timeline)
 	push(']');
 }
 
-function parseTextInstance(text)
-{
+function parseTextInstance(text) {
 	jsonHeader(key("textFIELD_Instance", "TFI"));
 	jsonStr(key("text", "TXT"), text.getTextString());
 	jsonStr(key("type", "T"), text.textType);
-	
+
 	if (text.textType != "static")
 		jsonStr(key("Instance_name", "IN"), text.name);
 
 	var orientation = null;
-	switch (text.orientation)
-	{
-		case "horizontal":				orientation = key("horizontal", "HR");					break;
-		case "vertical left to right":	orientation = key("vertical right to left", "VLTR");	break;
-		case "vertical right to left":	orientation = key("vertical right to left", "VRTL");	break;
+	switch (text.orientation) {
+		case "horizontal": orientation = key("horizontal", "HR"); break;
+		case "vertical left to right": orientation = key("vertical right to left", "VLTR"); break;
+		case "vertical right to left": orientation = key("vertical right to left", "VRTL"); break;
 	}
 
 	if (orientation != null)
 		jsonStr(key("orientation", "ORT"), orientation);
-	
-	if (text.textType != "static")
-	{
+
+	if (text.textType != "static") {
 		var lineType = null;
-		switch (text.lineType)
-		{
-			case "single line": 		lineType = key("single line", "SL"); 				break;
-			case "multiline": 			lineType = key("multiline", "ML");			 		break;
-			case "multiline no wrap": 	lineType = key("multiline no wrap", "MLN"); 		break;
-			case "password": 			lineType = key("password", "PSW"); 					break;
+		switch (text.lineType) {
+			case "single line": lineType = key("single line", "SL"); break;
+			case "multiline": lineType = key("multiline", "ML"); break;
+			case "multiline no wrap": lineType = key("multiline no wrap", "MLN"); break;
+			case "password": lineType = key("password", "PSW"); break;
 		}
 		if (lineType != null)
-			jsonStr(key("lineType", "LT"), lineType);	
+			jsonStr(key("lineType", "LT"), lineType);
 	}
-	
+
 	jsonArray(key("attributes", "ATR"));
-	
+
 	var t = 0;
 	var index = 0;
-	while (t < text.textRuns.length)
-	{
+	while (t < text.textRuns.length) {
 		push("{\n");
 		var run = text.textRuns[t++];
 
@@ -1408,7 +1296,7 @@ function parseTextInstance(text)
 		jsonVar(key("leftMargin", "LFM"), run.textAttrs.leftMargin);
 		jsonVar(key("rightMargin", "RFM"), run.textAttrs.rightMargin);
 		jsonStrEnd("URL", run.textAttrs.url);
-		
+
 		index += run.characters.length;
 
 		push("},\n");
@@ -1428,22 +1316,19 @@ function parseTextInstance(text)
 var cachedMatrices;
 var cachedBitmaps;
 
-function parseBitmapInstance(bitmap, timeline, layerIndex, frameIndex, elemIndex)
-{
+function parseBitmapInstance(bitmap, timeline, layerIndex, frameIndex, elemIndex) {
 	var item = bitmap.libraryItem;
 	var name = item.name;
 
 	var matrix = cloneMatrix(bitmap.matrix);
 	var scale = getMatrixScale(item.hPixels, item.vPixels);
 
-	if (scale > 1)
-	{
+	if (scale > 1) {
 		matrix.a *= scale;
 		matrix.d *= scale;
 	}
 
-	if (cachedBitmaps[name] != null)
-	{
+	if (cachedBitmaps[name] != null) {
 		parseAtlasInstance(matrix, cachedBitmaps[name]);
 		return;
 	}
@@ -1455,19 +1340,17 @@ function parseBitmapInstance(bitmap, timeline, layerIndex, frameIndex, elemIndex
 	smIndex++;
 }
 
-function parseShape(timeline, layerIndex, frameIndex, elementIndices)
-{
+function parseShape(timeline, layerIndex, frameIndex, elementIndices) {
 	var shapeBounds = pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices);
 	var atlasIndex = (smIndex - 1);
-	
+
 	var shapeLeft = Number.POSITIVE_INFINITY;
 	var shapeTop = Number.POSITIVE_INFINITY;
 	var shapeRight = Number.NEGATIVE_INFINITY;
 	var shapeBottom = Number.NEGATIVE_INFINITY;
 
 	var s = 0;
-	while (s < shapeBounds.length)
-	{	
+	while (s < shapeBounds.length) {
 		var bounds = shapeBounds[s++];
 		shapeLeft = min(shapeLeft, bounds.left);
 		shapeTop = min(shapeTop, bounds.top);
@@ -1484,15 +1367,13 @@ function parseShape(timeline, layerIndex, frameIndex, elementIndices)
 	parseAtlasInstance(mtx, atlasIndex);
 }
 
-function getElementRect(element, frameFilters, overrideFilters)
-{
+function getElementRect(element, frameFilters, overrideFilters) {
 	var minX;
 	var minY;
 	var maxX;
 	var maxY;
 
-	switch (element.elementType)
-	{
+	switch (element.elementType) {
 		case "shape":
 		case "text":
 			var bounds = element.objectSpaceBounds;
@@ -1500,21 +1381,19 @@ function getElementRect(element, frameFilters, overrideFilters)
 			minY = bounds.top;
 			maxX = bounds.right;
 			maxY = bounds.bottom;
-		break;
-		case "instance":	
+			break;
+		case "instance":
 			var timeline = element.libraryItem.timeline;
 			var frameIndex = (element.firstFrame != undefined) ? element.firstFrame : 0;
 
 			minX = minY = Number.POSITIVE_INFINITY;
-			maxX = maxY = Number.NEGATIVE_INFINITY;	
-		
+			maxX = maxY = Number.NEGATIVE_INFINITY;
+
 			var l = 0;
-			while (l < timeline.layers.length)
-			{
+			while (l < timeline.layers.length) {
 				var frameElements = timeline.layers[l++].frames[frameIndex].elements;
 				var e = 0;
-				while (e < frameElements.length)
-				{
+				while (e < frameElements.length) {
 					var elem = getElementRect(frameElements[e++]);
 					minX = min(minX, elem.left);
 					minY = min(minY, elem.top);
@@ -1522,7 +1401,7 @@ function getElementRect(element, frameFilters, overrideFilters)
 					maxY = max(maxY, elem.bottom);
 				}
 			}
-		break;
+			break;
 	}
 
 	var instanceFilters = new Array();
@@ -1533,10 +1412,9 @@ function getElementRect(element, frameFilters, overrideFilters)
 	var leFilters = overrideFilters != null ? overrideFilters : element.filters;
 	if (leFilters != null && leFilters.length > 0)
 		instanceFilters = instanceFilters.concat(leFilters);
-	
+
 	forEachFilter(instanceFilters, function (filter) {
-		switch (filter.name)
-		{
+		switch (filter.name) {
 			case "glowFilter":
 				if (filter.inner)
 					break;
@@ -1546,7 +1424,7 @@ function getElementRect(element, frameFilters, overrideFilters)
 				minY -= filter.blurY * blurMult;
 				maxX += filter.blurX * blurMult;
 				maxY += filter.blurY * blurMult;
-			break;
+				break;
 		}
 	});
 
@@ -1560,22 +1438,19 @@ function getElementRect(element, frameFilters, overrideFilters)
 
 var resizedContain = false;
 
-function getMatrixScale(width, height)
-{
+function getMatrixScale(width, height) {
 	var maxSize = max(width * resolution, height * resolution);
 	var mxScale = resScale;
-	
-	if (maxSize > 8192)
-	{
+
+	if (maxSize > 8192) {
 		resizedContain = true;
 		mxScale = 1.0 / (((8192 / maxSize) / 1.01) * resolution); // pixel rounding crap
 	}
-	
+
 	return mxScale;
 }
 
-function parseAtlasInstance(matrix, index)
-{
+function parseAtlasInstance(matrix, index) {
 	cachedMatrices[index] = matrix;
 	jsonHeader(key("ATLAS_SPRITE_instance", "ASI"));
 	jsonVar(key("Matrix", "MX"), parseMatrix(matrix, false));
@@ -1587,8 +1462,7 @@ var lastTimeline;
 var lastLayer;
 var lastFrame;
 
-function pushElementsFromFrame(timeline, layerIndex, frameIndex, elementIndices)
-{
+function pushElementsFromFrame(timeline, layerIndex, frameIndex, elementIndices) {
 	if (timeline != lastTimeline) {
 		lastTimeline = timeline;
 		lastLayer = null;
@@ -1606,22 +1480,21 @@ function pushElementsFromFrame(timeline, layerIndex, frameIndex, elementIndices)
 	}
 
 	TEMP_TIMELINE.pasteFrames(smIndex);
-	
+
 	var elemFrame = TEMP_LAYER.frames[smIndex];
 	if (elemFrame.tweenType != "none")
 		elemFrame.tweenType = "none";
-	
+
 	frameQueue.push(elementIndices);
 }
 
-function pushElementSpritemap(timeline, layerIndex, frameIndex, elementIndices, frameFilters)
-{
+function pushElementSpritemap(timeline, layerIndex, frameIndex, elementIndices, frameFilters) {
 	pushElementsFromFrame(timeline, layerIndex, frameIndex, elementIndices);
 	var itemName = "_bta_asi_" + smIndex;
 
 	initJson();
 	push('{\n');
-	
+
 	if (inlineSym) {
 		jsonStr(key("SYMBOL_name", "SN"), itemName);
 		jsonHeader(key("TIMELINE", "TL"));
@@ -1631,41 +1504,39 @@ function pushElementSpritemap(timeline, layerIndex, frameIndex, elementIndices, 
 
 	var elem = TEMP_LAYER.frames[smIndex].elements[elementIndices[0]];
 	var elementFilters = curTweenFilters != null ? curTweenFilters : elem.filters;
-	
+
 	if (curTweenFilters != null)
 		bakedTweenedFilters[smIndex] = curTweenFilters;
-	
+
 	var rect = getElementRect(elem, frameFilters, elementFilters);
 	var matScale = getMatrixScale(rect.right - rect.left, rect.bottom - rect.top);
 	var matScaleX = (elem.scaleX < 1) ? (1 / elem.scaleX) * matScale : matScale;
 	var matScaleY = (elem.scaleY < 1) ? (1 / elem.scaleY) * matScale : matScale;
 
-	if (bakedFilters)
-	{
+	if (bakedFilters) {
 		var scaleXMult = 1;
 		var scaleYMult = 1;
-	
+
 		// Scaling down blurry symbols so antialiasing can do the dirty work later
 		forEachFilter(elementFilters, function (filter) {
 			switch (filter.name) {
 				case "blurFilter":
 					var qualityScale = 0.5;
 					if (filter.quality == "medium") qualityScale = 0.75;
-					if (filter.quality == "low") 	qualityScale = 0.95;
+					if (filter.quality == "low") qualityScale = 0.95;
 					scaleXMult *= (filter.blurX / (16 * qualityScale));
 					scaleYMult *= (filter.blurY / (16 * qualityScale));
-				break;
+					break;
 			}
 		});
-	
+
 		matScaleX *= max(scaleXMult, 1);
 		matScaleY *= max(scaleYMult, 1);
 	}
 
 	var atlasMatrix = makeMatrix(matScaleX, 0, 0, matScaleY, rect.left, rect.top);
 
-	if (flattenSkewing)
-	{
+	if (flattenSkewing) {
 		var m = elem.matrix;
 		var w = (rect.right - rect.left);
 		var h = (rect.bottom - rect.top);
@@ -1684,12 +1555,11 @@ function pushElementSpritemap(timeline, layerIndex, frameIndex, elementIndices, 
 	if (inlineSym)
 		push('}');
 
-	bakedDictionary.push({name: itemName, json: closeJson()});
+	bakedDictionary.push({ name: itemName, json: closeJson() });
 	parseSymbolInstance(elem, itemName);
 }
 
-function forEachFilter(filters, callback)
-{
+function forEachFilter(filters, callback) {
 	if (filters == undefined || filters.length <= 0)
 		return;
 
@@ -1699,21 +1569,18 @@ function forEachFilter(filters, callback)
 	}
 }
 
-function getFrameBounds(timeline, frameIndex)
-{
+function getFrameBounds(timeline, frameIndex) {
 	// For versions where its allowed, timeline.getBounds is generally faster than our own function
 	// TODO: may have to change in the future due to filter bounds tho
-	if (flversion >= 15)
-	{
+	if (flversion >= 15) {
 		var bounds = timeline.getBounds(frameIndex + 1);
-		return bounds === 0 ? {left: 0, top: 0, right: 0, bottom: 0} : bounds;
+		return bounds === 0 ? { left: 0, top: 0, right: 0, bottom: 0 } : bounds;
 	}
 
 	if (timeline.layerCount == 1) {
 		var layer = timeline.layers[0];
 		var frame = layer.frames[frameIndex];
-		if (frame.elements.length == 1)
-		{
+		if (frame.elements.length == 1) {
 			return frame.elements[0].objectSpaceBounds;
 		}
 	}
@@ -1726,42 +1593,39 @@ function getFrameBounds(timeline, frameIndex)
 	var foundElements = 0;
 	var l = 0;
 
-	while (l < timeline.layerCount)
-	{
-		var layer = timeline.layers[l++];	
+	while (l < timeline.layerCount) {
+		var layer = timeline.layers[l++];
 		if (frameIndex > layer.frameCount - 1)
 			continue;
 
 		var e = 0;
 		var elems = layer.frames[frameIndex].elements;
-		
-		while (e < elems.length)
-		{
+
+		while (e < elems.length) {
 			var elem = elems[e++];
 			foundElements++;
 
-			switch (elem.elementType)
-			{
+			switch (elem.elementType) {
 				case "shape":
 					var bounds = elem.objectSpaceBounds;
 					minX = min(minX, bounds.left);
 					minY = min(minY, bounds.top);
 					maxX = max(maxX, bounds.right);
 					maxY = max(maxY, bounds.bottom);
-				break;
+					break;
 				default:
 					var rect = getElementRect(elem);
 					minX = min(minX, rect.left);
 					minY = min(minY, rect.top);
 					maxX = max(maxX, rect.right);
 					maxY = max(maxY, rect.bottom);
-				break;
+					break;
 			}
 		}
 	}
 
 	if (foundElements <= 0) {
-		return {left: 0, top: 0, right: 0, bottom: 0}
+		return { left: 0, top: 0, right: 0, bottom: 0 }
 	}
 
 	return {
@@ -1772,8 +1636,7 @@ function getFrameBounds(timeline, frameIndex)
 	}
 }
 
-function pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices)
-{
+function pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices) {
 	pushElementsFromFrame(timeline, layerIndex, frameIndex, elementIndices);
 
 	var frameElements = TEMP_LAYER.frames[smIndex].elements;
@@ -1788,8 +1651,7 @@ function pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices)
 	var shapes = [];
 
 	// no cleanup needed here
-	if (frameElements.length === 1)
-	{
+	if (frameElements.length === 1) {
 		var shape = frameElements[0];
 		shapes.push({
 			left: shape.left,
@@ -1800,10 +1662,8 @@ function pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices)
 		return shapes;
 	}
 
-	while (e < l)
-	{
-		if (elementIndices.indexOf(e) !== - 1)
-		{
+	while (e < l) {
+		if (elementIndices.indexOf(e) !== - 1) {
 			e++;
 			continue;
 		}
@@ -1817,17 +1677,15 @@ function pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices)
 
 	e = 0;
 
-	while (e < l)
-	{
+	while (e < l) {
 		if (elementIndices.indexOf(e) !== -1) // Add the actual parts of the array
 		{
 			var elem = frameElements[e];
 			var elemWidth = Math.round(elem.width);
 			var elemHeight = Math.round(elem.height);
-			
+
 			// Checking because its both the same shape instance but also not?? Really weird shit
-			if (elemWidth != lastWidth && elemHeight != lastHeight)
-			{
+			if (elemWidth != lastWidth && elemHeight != lastHeight) {
 				// Gotta do this because jsfl scripts cant keep track well of instances data and will randomly corrupt values
 				shapes.push(elem.objectSpaceBounds);
 
@@ -1845,8 +1703,7 @@ function pushShapeSpritemap(timeline, layerIndex, frameIndex, elementIndices)
 var instanceSizes;
 var curSymbol;
 
-function resizeInstanceMatrix(name, matrix)
-{
+function resizeInstanceMatrix(name, matrix) {
 	var maxScale = instanceSizes[name];
 	if (maxScale == null)
 		return;
@@ -1855,17 +1712,14 @@ function resizeInstanceMatrix(name, matrix)
 	matrix.d /= maxScale[1];
 }
 
-function pushInstanceSize(name, scaleX, scaleY)
-{
+function pushInstanceSize(name, scaleX, scaleY) {
 	var curInstanceSize = instanceSizes[curSymbol];
-	if (curInstanceSize != null)
-	{
+	if (curInstanceSize != null) {
 		scaleX *= curInstanceSize[0];
 		scaleY *= curInstanceSize[1];
 	}
 
-	if (instanceSizes[name] == null)
-	{
+	if (instanceSizes[name] == null) {
 		var list = [scaleX, scaleY];
 		instanceSizes[name] = list;
 		return;
@@ -1876,10 +1730,8 @@ function pushInstanceSize(name, scaleX, scaleY)
 	list[1] = max(list[1], scaleY);
 }
 
-function getFrameFilters(layer, frameIndex)
-{
-	if (flversion >= 20 && layer.getFiltersAtFrame != null)
-	{
+function getFrameFilters(layer, frameIndex) {
+	if (flversion >= 20 && layer.getFiltersAtFrame != null) {
 		var filters = layer.getFiltersAtFrame(frameIndex);
 		if (filters != null)
 			return filters;
@@ -1888,13 +1740,11 @@ function getFrameFilters(layer, frameIndex)
 	return new Array(0);
 }
 
-function parseSymbolInstance(instance, itemName)
-{
+function parseSymbolInstance(instance, itemName) {
 	var bakedInstance = (itemName != undefined);
 	jsonHeader(key("SYMBOL_Instance", "SI"));
 
-	if (itemName == undefined)
-	{
+	if (itemName == undefined) {
 		item = instance.libraryItem;
 		if (item != undefined) {
 			itemName = item.name;
@@ -1906,13 +1756,11 @@ function parseSymbolInstance(instance, itemName)
 	if (itemName != undefined) {
 		jsonStr(key("SYMBOL_name", "SN"), itemName);
 
-		if (!bakedInstance)
-		{
+		if (!bakedInstance) {
 			var scaleX = instance.scaleX;
 			var scaleY = instance.scaleY;
 
-			if (curFrameMatrix != null)
-			{
+			if (curFrameMatrix != null) {
 				scaleX *= curFrameMatrix.a;
 				scaleY *= curFrameMatrix.d;
 			}
@@ -1921,28 +1769,26 @@ function parseSymbolInstance(instance, itemName)
 		}
 	}
 
-	if (instance.firstFrame != undefined)
-	{
+	if (instance.firstFrame != undefined) {
 		var firstFrame = instance.firstFrame;
 
-		if (bakedTweens && curTweenFrame > -1)
-		{
+		if (bakedTweens && curTweenFrame > -1) {
 			var length = instance.libraryItem.timeline.frameCount;
 			switch (instance.loop) {
-				case "play once": 		firstFrame = Math.min(firstFrame + curTweenFrame, length); break;
-				case "loop": 			firstFrame = firstFrame + curTweenFrame % length;          break;
+				case "play once": firstFrame = Math.min(firstFrame + curTweenFrame, length); break;
+				case "loop": firstFrame = firstFrame + curTweenFrame % length; break;
 			}
 		}
-		
+
 		jsonVar(key("firstFrame", "FF"), firstFrame);
 	}
 
 	if (instance.symbolType != undefined) {
 		var type;
 		switch (instance.symbolType) {
-			case "graphic": 	type = key("graphic", "G"); 	break
-			case "movie clip": 	type = key("movieclip", "MC"); 	break;
-			case "button": 		type = key("button", "B"); 		break;
+			case "graphic": type = key("graphic", "G"); break
+			case "movie clip": type = key("movieclip", "MC"); break;
+			case "button": type = key("button", "B"); break;
 		}
 		jsonStr(key("symbolType", "ST"), type);
 	}
@@ -1954,22 +1800,19 @@ function parseSymbolInstance(instance, itemName)
 
 	var colorMode = instance.colorMode;
 	var colorValues = instance;
-	if (bakedTweens && curTweenColorTransform != null)
-	{
+	if (bakedTweens && curTweenColorTransform != null) {
 		colorMode = "advanced"; // baking the color mode to advanced because im too tired for this shit
 	}
 
 	var validColor = colorMode != "none";
-	if (validColor)
-	{
+	if (validColor) {
 		if (bakedTweens && curTweenColorTransform != null)
 			colorValues = curTweenColorTransform;
 
-		if (colorMode == "advanced")
-		{
+		if (colorMode == "advanced") {
 			validColor =
-			(colorValues.colorRedPercent != 100) || (colorValues.colorGreenPercent != 100) || (colorValues.colorBluePercent != 100) || (colorValues.colorAlphaPercent != 100) ||
-			(colorValues.colorRedAmount != 0) || (colorValues.colorGreenAmount != 0) || (colorValues.colorBlueAmount != 0) || (colorValues.colorAlphaAmount != 0);
+				(colorValues.colorRedPercent != 100) || (colorValues.colorGreenPercent != 100) || (colorValues.colorBluePercent != 100) || (colorValues.colorAlphaPercent != 100) ||
+				(colorValues.colorRedAmount != 0) || (colorValues.colorGreenAmount != 0) || (colorValues.colorBlueAmount != 0) || (colorValues.colorAlphaAmount != 0);
 		}
 	}
 
@@ -1978,21 +1821,20 @@ function parseSymbolInstance(instance, itemName)
 		jsonHeader(key("color", "C"));
 		var modeKey = key("mode", "M");
 
-		switch (colorMode)
-		{
+		switch (colorMode) {
 			case "brightness":
 				jsonStr(modeKey, key("Brightness", "CBRT"));
 				jsonVarEnd(key("brightness", "BRT"), colorValues.brightness);
-			break;
+				break;
 			case "tint":
 				jsonStr(modeKey, key("Tint", "T"));
 				jsonStr(key("tintColor", "TC"), instance.tintColor);
 				jsonNumEnd(key("tintMultiplier", "TM"), (100 - instance.tintPercent) * 0.01);
-			break;
+				break;
 			case "alpha":
 				jsonStr(modeKey, key("Alpha", "CA"));
 				jsonNumEnd(key("alphaMultiplier", "AM"), colorValues.colorAlphaPercent * 0.01);
-			break;
+				break;
 			case "advanced":
 				jsonStr(modeKey, key("Advanced", "AD"));
 				jsonNum(key("RedMultiplier", "RM"), colorValues.colorRedPercent * 0.01);
@@ -2003,7 +1845,7 @@ function parseSymbolInstance(instance, itemName)
 				jsonVar(key("greenOffset", "GO"), colorValues.colorGreenAmount);
 				jsonVar(key("blueOffset", "BO"), colorValues.colorBlueAmount);
 				jsonVarEnd(key("AlphaOffset", "AO"), colorValues.colorAlphaAmount);
-			break;
+				break;
 		}
 
 		push('},\n');
@@ -2015,20 +1857,18 @@ function parseSymbolInstance(instance, itemName)
 	if (instance.loop != undefined) {
 		var loop;
 		switch (instance.loop) {
-			case "play once": 		loop = key("playonce", "PO"); 		break;
-			case "single frame":	loop = key("singleframe", "SF");	break;
-			case "loop": 			loop = key("loop", "LP");			break;
+			case "play once": loop = key("playonce", "PO"); break;
+			case "single frame": loop = key("singleframe", "SF"); break;
+			case "loop": loop = key("loop", "LP"); break;
 		}
 		jsonStr(key("loop", "LP"), loop);
 	}
 
-	if (instance.is3D)	jsonVar(key("Matrix3D", "M3D"), parseMatrix3D(instance.matrix3D));
-	else
-	{
+	if (instance.is3D) jsonVar(key("Matrix3D", "M3D"), parseMatrix3D(instance.matrix3D));
+	else {
 		var matrix = instance.matrix;
 
-		if (flattenSkewing)
-		{
+		if (flattenSkewing) {
 			matrix = cloneMatrix(matrix);
 			matrix.b = 0;
 			matrix.c = 0;
@@ -2037,8 +1877,7 @@ function parseSymbolInstance(instance, itemName)
 		jsonVar(key("Matrix", "MX"), parseMatrix(matrix, true));
 	}
 
-	if (instance.symbolType != "graphic")
-	{
+	if (instance.symbolType != "graphic") {
 		if (instance.blendMode != null && instance.blendMode != "normal")
 			jsonVar(key("blend", "B"), parseBlendMode(instance.blendMode));
 
@@ -2046,12 +1885,10 @@ function parseSymbolInstance(instance, itemName)
 		var hasFilters = (filters != null && filters.length > 0)
 
 		// Add Filters
-		if (hasFilters && !bakedFilters)
-		{
+		if (hasFilters && !bakedFilters) {
 			parseFilters(filters)
 		}
-		else
-		{
+		else {
 			removeTrail(2);
 		}
 	}
@@ -2060,10 +1897,8 @@ function parseSymbolInstance(instance, itemName)
 	push('}');
 }
 
-function parseBlendMode(blend)
-{
-	switch (blend)
-	{
+function parseBlendMode(blend) {
+	switch (blend) {
 		case "add": return 0;
 		case "alpha": return 1;
 		case "darken": return 2;
@@ -2082,14 +1917,12 @@ function parseBlendMode(blend)
 	return 10; // normal
 }
 
-function parseFilters(filters)
-{
+function parseFilters(filters) {
 	jsonArray(key("filters", "F"));
 	var n = key("name", "N");
 
 	var i = 0;
-	while (i < filters.length)
-	{
+	while (i < filters.length) {
 		var filter = filters[i];
 		push('{\n');
 
@@ -2100,7 +1933,7 @@ function parseFilters(filters)
 				jsonVar(key("hue", "H"), filter.hue);
 				jsonVar(key("contrast", "CT"), filter.contrast);
 				jsonVarEnd(key("saturation", "SAT"), filter.saturation);
-			break;
+				break;
 			case "bevelFilter":
 				jsonStr(n, key("bevelFilter", "BF"));
 				jsonVar(key("blurX", "BLX"), filter.blurX);
@@ -2113,13 +1946,13 @@ function parseFilters(filters)
 				jsonStr(key("shadowColor", "SC"), filter.shadowColor);
 				jsonStr(key("highlightColor", "HC"), filter.highlightColor);
 				jsonVarEnd(key("quality", "Q"), parseQuality(filter.quality));
-			break;
+				break;
 			case "blurFilter":
 				jsonStr(n, key("blurFilter", "BLF"));
 				jsonVar(key("blurX", "BLX"), filter.blurX);
 				jsonVar(key("blurY", "BLY"), filter.blurY);
 				jsonVarEnd(key("quality", "Q"), parseQuality(filter.quality));
-			break;
+				break;
 			case "dropShadowFilter":
 				jsonStr(n, key("dropShadowFilter", "DSF"));
 				jsonVar(key("blurX", "BLX"), filter.blurX);
@@ -2132,7 +1965,7 @@ function parseFilters(filters)
 				jsonVar(key("angle", "A"), filter.angle);
 				jsonStr(key("color", "C"), filter.color);
 				jsonVarEnd(key("quality", "Q"), parseQuality(filter.quality));
-			break;
+				break;
 			case "glowFilter":
 				jsonStr(n, key("glowFilter", "GF"));
 				jsonVar(key("blurX", "BLX"), filter.blurX);
@@ -2142,7 +1975,7 @@ function parseFilters(filters)
 				jsonVar(key("strength", "STR"), filter.strength);
 				jsonStr(key("color", "C"), filter.color);
 				jsonVarEnd(key("quality", "Q"), parseQuality(filter.quality));
-			break;
+				break;
 			case "gradientBevelFilter":
 				jsonStr(n, key("gradientBevelFilter", "GBF"));
 				jsonVar(key("blurX", "BLX"), filter.blurX);
@@ -2154,7 +1987,7 @@ function parseFilters(filters)
 				jsonVar(key("angle", "A"), filter.angle);
 				jsonVar(key("colorArray", "CA"), parseArray(filter.colorArray));
 				jsonVarEnd(key("quality", "Q"), parseQuality(filter.quality));
-			break;
+				break;
 			case "gradientGlowFilter":
 				jsonStr(n, key("gradientGlowFilter", "GGF"));
 				jsonVar(key("blurX", "BLX"), filter.blurX);
@@ -2164,7 +1997,7 @@ function parseFilters(filters)
 				jsonVar(key("strength", "STR"), filter.strength);
 				jsonVar(key("colorArray", "CA"), parseArray(filter.colorArray));
 				jsonVarEnd(key("quality", "Q"), parseQuality(filter.quality));
-			break;
+				break;
 		}
 
 		push((i < filters.length - 1) ? '},' : '}\n');
@@ -2174,7 +2007,7 @@ function parseFilters(filters)
 	push(']\n');
 }
 
-function makeMatrix(a, b, c, d, tx, ty) { return {a: a, b: b, c: c, d: d, tx: tx, ty: ty} }
+function makeMatrix(a, b, c, d, tx, ty) { return { a: a, b: b, c: c, d: d, tx: tx, ty: ty } }
 function cloneMatrix(mat) { return makeMatrix(mat.a, mat.b, mat.c, mat.d, mat.tx, mat.ty); }
 function copyMatrix(m1, m2) {
 	m1.a = m2.a;
@@ -2185,39 +2018,36 @@ function copyMatrix(m1, m2) {
 	m1.ty = m2.ty;
 }
 
-function parseMatrix(m, doConcat)
-{
+function parseMatrix(m, doConcat) {
 	// Concat the matrix
-	if (doConcat)
-	{
+	if (doConcat) {
 		if (curFrameMatrix != null)
 			m = fl.Math.concatMatrix(m, curFrameMatrix);
-		
+
 		if (bakedTweens && curTweenMatrix != null)
 			m = fl.Math.concatMatrix(m, curTweenMatrix);
 	}
-	
+
 	return "[" +
-	rValue(m.a) + "," + rValue(m.b) + "," + rValue(m.c) + "," +
-	rValue(m.d) + "," + rValue(m.tx) + "," + rValue(m.ty) +
-	"]";
+		rValue(m.a) + "," + rValue(m.b) + "," + rValue(m.c) + "," +
+		rValue(m.d) + "," + rValue(m.tx) + "," + rValue(m.ty) +
+		"]";
 }
 
 function parseMatrix3D(m) {
 	return "[" +
-	m.m00 + "," + m.m01 + "," + m.m02 + "," + m.m03 + "," +
-	m.m10 + "," + m.m11 + "," + m.m12 + "," + m.m13 + "," +
-	m.m20 + "," + m.m21 + "," + m.m22 + "," + m.m23 + "," +
-	m.m30 + "," + m.m31 + "," + m.m32 + "," + m.m33 +
-	"]";
+		m.m00 + "," + m.m01 + "," + m.m02 + "," + m.m03 + "," +
+		m.m10 + "," + m.m11 + "," + m.m12 + "," + m.m13 + "," +
+		m.m20 + "," + m.m21 + "," + m.m22 + "," + m.m23 + "," +
+		m.m30 + "," + m.m31 + "," + m.m32 + "," + m.m33 +
+		"]";
 }
 
 function parseArray(array) {
-	return '["' + array.join('","') +'"]';
+	return '["' + array.join('","') + '"]';
 }
 
-function getQualityScale(quality)
-{
+function getQualityScale(quality) {
 	if (quality == "low") return 0.333;
 	if (quality == "medium") return 0.75;
 	return 1;
@@ -2230,15 +2060,14 @@ function parseQuality(quality) {
 }
 
 function formatLimbName(numStr) {
-    var i = 0;
-    while (i < numStr.length && numStr[i] === '0') {
-        i++;
-    }
-    return i === numStr.length ? "0" : numStr.slice(i);
+	var i = 0;
+	while (i < numStr.length && numStr[i] === '0') {
+		i++;
+	}
+	return i === numStr.length ? "0" : numStr.slice(i);
 }
 
-function formatPath(path)
-{
+function formatPath(path) {
 	// All good here im gonna assume
 	if (path.split("file:///").length > 1) {
 		return path;
@@ -2268,35 +2097,31 @@ function findItem(name) {
 	return null;
 }
 
-function key(normal, optimized) 	{ return optimizeJson ? optimized : normal; }
-function jsonVarEnd(name, value)	{ push('"' + name + '":' + value + '\n'); }
-function jsonVar(name, value)		{ push('"' + name + '":' + value + ',\n'); }
-function jsonStrEnd(name, value)	{ push('"' + name + '":"' + value + '"\n'); }
-function jsonStr(name, value)		{ push('"' + name + '":"' + value + '",\n'); }
-function jsonArray(name)			{ push('"' + name + '":[\n'); }
-function jsonHeader(name)			{ push('"' + name + '":{\n'); }
+function key(normal, optimized) { return optimizeJson ? optimized : normal; }
+function jsonVarEnd(name, value) { push('"' + name + '":' + value + '\n'); }
+function jsonVar(name, value) { push('"' + name + '":' + value + ',\n'); }
+function jsonStrEnd(name, value) { push('"' + name + '":"' + value + '"\n'); }
+function jsonStr(name, value) { push('"' + name + '":"' + value + '",\n'); }
+function jsonArray(name) { push('"' + name + '":[\n'); }
+function jsonHeader(name) { push('"' + name + '":{\n'); }
 
 function jsonNumEnd(name, value) { jsonVarEnd(name, rValue(value)); }
 function jsonNum(name, value) { jsonVar(name, rValue(value)); }
 function rValue(value) { return parseFloat(value.toFixed(3)); }
 
-function measure(func)
-{
+function measure(func) {
 	var last = Date.now();
 	func();
 	trace("" + (Date.now() - last) + "ms");
 }
 
-function traceArray(array)
-{
+function traceArray(array) {
 	trace(array.join(", "));
 }
 
-function traceFields(value, makeNewLines)
-{
+function traceFields(value, makeNewLines) {
 	var traceCrap = "";
-	for (var field in value)
-	{
+	for (var field in value) {
 		if (field == "brightness" || field == "tintColor" || field == "tintPercent")
 			continue;
 
@@ -2311,8 +2136,7 @@ function trace(msg) {
 	fl.trace(String(msg));
 }
 
-function isArray(value)
-{
+function isArray(value) {
 	return value.push != undefined;
 }
 
@@ -2328,53 +2152,45 @@ function max(a, b) {
 var lastJson = undefined;
 var curJson = undefined;
 
-function initJson()
-{
+function initJson() {
 	lastJson = curJson;
 	curJson = [];
 }
 
-function closeJson()
-{
+function closeJson() {
 	var result = curJson != undefined ? curJson.join("") : "";
 	curJson = lastJson;
 	return result;
 }
 
-function push(data)
-{
+function push(data) {
 	curJson.push(data);
 }
 
-function removeTrail(trail)
-{
-	curJson[curJson.length -1] = curJson[curJson.length -1].slice(0, -trail) + "\n";
+function removeTrail(trail) {
+	curJson[curJson.length - 1] = curJson[curJson.length - 1].slice(0, -trail) + "\n";
 }
 
-function xmlToObject(__xml)
-{
-    var xmlData = new XML(String(__xml));
-    return xmlNode(xmlData);
+function xmlToObject(__xml) {
+	var xmlData = new XML(String(__xml));
+	return xmlNode(xmlData);
 }
 
-function xmlNode(xml)
-{
-    var obj = {};
+function xmlNode(xml) {
+	var obj = {};
 
 	var at = 0;
 	var attributes = xml.attributes();
-	while (at < atrib.length())
-    {
-        var attribute = attributes[at++];
-        obj[attribute.name()] = attribute.toString();
-    }
+	while (at < atrib.length()) {
+		var attribute = attributes[at++];
+		obj[attribute.name()] = attribute.toString();
+	}
 
 	var j = 0;
 	var children = xml.children();
-    while (j < children.length())
-	{
-        var child = children[j++];
-        var childName = child.name();
+	while (j < children.length()) {
+		var child = children[j++];
+		var childName = child.name();
 
 		if (obj[childName] == undefined) // Basic value
 		{
@@ -2388,42 +2204,39 @@ function xmlNode(xml)
 		{
 			obj[childName] = [obj[childName], xmlNode(child)];
 		}
-    }
-    
-    return obj;
+	}
+
+	return obj;
 }
 
-function writeFile(path, content)
-{
+function writeFile(path, content) {
 	if (FLfile.exists(path))
 		FLfile.remove(path);
 
 	FLfile.write(path, content);
 }
 
-function renameFile(path, newPath)
-{
+function renameFile(path, newPath) {
 	FLfile.copy(path, newPath);
 	FLfile.remove(path);
 }
 
-function legacySpritesheet(shapeLength, sheetFrame)
-{
-    var curX = BrdPad;
-    var curY = BrdPad;
-    var sheetWidth = 0;
-    var maxHeight = 0;
-    var maxSheetWidth = 0;
-    var maxSheetHeight = 0;
-    var packedRectangles = [];
-	
+function legacySpritesheet(shapeLength, sheetFrame) {
+	var curX = BrdPad;
+	var curY = BrdPad;
+	var sheetWidth = 0;
+	var maxHeight = 0;
+	var maxSheetWidth = 0;
+	var maxSheetHeight = 0;
+	var packedRectangles = [];
+
 	var elem;
 	var isFiltered;
 	var isRotated;
 
 	for (i = 0; i < 4; i++)
-		lib.addItemToDocument({x: 0, y: 0}, TEMP_SPRITEMAP);
-	
+		lib.addItemToDocument({ x: 0, y: 0 }, TEMP_SPRITEMAP);
+
 	var tl = doc.getTimeline();
 	tl.currentLayer = 0;
 	tl.currentFrame = 0;
@@ -2432,16 +2245,14 @@ function legacySpritesheet(shapeLength, sheetFrame)
 	doc.selectAll();
 	doc.clipCopy();
 
-    while (sheetFrame.elements.length < shapeLength)
-	{
+	while (sheetFrame.elements.length < shapeLength) {
 		doc.clipPaste();
 	}
 
-	var updateElemPos = function(ogElem, elem)
-	{
+	var updateElemPos = function (ogElem, elem) {
 		if (ogElem.elementType != "shape") {
-			
-			var ogElemPos = {x: ogElem.x, y: ogElem.y};
+
+			var ogElemPos = { x: ogElem.x, y: ogElem.y };
 
 			if (isFiltered) {
 				ogElemPos.x += rect.left * ogElem.scaleX;
@@ -2456,7 +2267,7 @@ function legacySpritesheet(shapeLength, sheetFrame)
 			if (isRotated) {
 				ogElemPos.x -= ogElem.width;
 			}
-			
+
 			elem.x = Math.floor(curX - ogElemPos.x);
 			elem.y = Math.floor(curY - ogElemPos.y);
 		}
@@ -2469,20 +2280,17 @@ function legacySpritesheet(shapeLength, sheetFrame)
 	var sortedIndices = [];
 
 	i = 0;
-	while (i < shapeLength)
-	{
+	while (i < shapeLength) {
 		var elem = TEMP_LAYER.frames[i].elements[0];
-		if (elem == null)
-		{
-			sortedIndices.push({index: i, width: 1, height: 1, rotated: false});
+		if (elem == null) {
+			sortedIndices.push({ index: i, width: 1, height: 1, rotated: false });
 			i++;
 			continue;
 		}
-		
-		var rect = {index: i, width: elem.width, height: elem.height, rotated: false};
 
-		if (rect.height > rect.width)
-		{
+		var rect = { index: i, width: elem.width, height: elem.height, rotated: false };
+
+		if (rect.height > rect.width) {
 			var w = rect.width;
 			rect.width = rect.height;
 			rect.height = w;
@@ -2493,7 +2301,7 @@ function legacySpritesheet(shapeLength, sheetFrame)
 		i++;
 	}
 
-	sortedIndices.sort(function(a, b) {
+	sortedIndices.sort(function (a, b) {
 		if (a.height === b.height) {
 			return a.width - b.width;
 		}
@@ -2503,20 +2311,19 @@ function legacySpritesheet(shapeLength, sheetFrame)
 	var maxSize = 8192; // CS6 upwards
 	if (flversion < 12) // 2880 limit on older versions
 		maxSize = 2880;
-    
-    i = 0;
-    while (i < shapeLength)
-	{   
+
+	i = 0;
+	while (i < shapeLength) {
 		var sortedElem = sortedIndices[i];
 		var elemIndex = sortedElem.index;
 		var ogElem = TEMP_LAYER.frames[elemIndex].elements[0];
 
 		if (ogElem == null) {
-			packedRectangles[elemIndex] = {x:0,y:0,width:1,height:1,rotated:false};
+			packedRectangles[elemIndex] = { x: 0, y: 0, width: 1, height: 1, rotated: false };
 			i++;
 			continue;
 		}
-		
+
 		elem = sheetFrame.elements[elemIndex];
 		elem.firstFrame = elemIndex;
 		i++;
@@ -2528,26 +2335,25 @@ function legacySpritesheet(shapeLength, sheetFrame)
 
 		isFiltered = (ogElem.filters != null && ogElem.filters.length > 0);
 		rect = isFiltered ? getElementRect(ogElem) : (ogElem.objectSpaceBounds);
-		
+
 		var rectWidth = isFiltered ? (rect.right - rect.left) : ogElem.width;
 		var rectHeight = isFiltered ? (rect.bottom - rect.top) : ogElem.height;
 
 		updateElemPos(ogElem, elem);
 
 		var packedRect = {
-			x: Math.floor(curX-1),
-			y: Math.floor(curY-1),
-			width: Math.floor(rectWidth+1),
-			height: Math.floor(rectHeight+1),
+			x: Math.floor(curX - 1),
+			y: Math.floor(curY - 1),
+			width: Math.floor(rectWidth + 1),
+			height: Math.floor(rectHeight + 1),
 			rotated: sortedElem.rotated
 		}
 
 		packedRectangles[elemIndex] = packedRect;
 
 		curX += Math.floor(rectWidth + ShpPad + 1);
-		
-		if (curX > maxSize)
-		{
+
+		if (curX > maxSize) {
 			curX = BrdPad;
 			curY += maxHeight + ShpPad;
 			sheetWidth = maxSize;
@@ -2558,24 +2364,21 @@ function legacySpritesheet(shapeLength, sheetFrame)
 			packedRect.y = Math.floor(curY);
 			curX += Math.floor(rectWidth + ShpPad + 1);
 		}
-		else
-		{
+		else {
 			maxHeight = Math.max(maxHeight, rectHeight);
 			sheetWidth = Math.max(sheetWidth, curX);
 		}
 
 		maxSheetWidth = Math.max(maxSheetWidth, sheetWidth);
-        maxSheetHeight = Math.max(maxSheetHeight, curY + maxHeight);
-    }
+		maxSheetHeight = Math.max(maxSheetHeight, curY + maxHeight);
+	}
 
 	var extraShapes = sheetFrame.elements.length - shapeLength;
-	if (extraShapes > 0)
-	{
+	if (extraShapes > 0) {
 		i = shapeLength;
 		doc.selectNone();
-		
-		while (i < sheetFrame.elements.length)
-		{
+
+		while (i < sheetFrame.elements.length) {
 			sheetFrame.elements[i++].selected = true;
 		}
 
@@ -2587,24 +2390,23 @@ function legacySpritesheet(shapeLength, sheetFrame)
 	push('{"ATLAS":{"SPRITES":[\n');
 
 	var i = 0;
-	while (i < packedRectangles.length)
-	{	
+	while (i < packedRectangles.length) {
 		var rect = packedRectangles[i];
 		push('{"SPRITE":{"name":"' + i +
 			'","x":' + rect.x + ',"y":' + rect.y +
 			',"w":' + rect.width + ',"h":' + rect.height +
 			',"rotated":' + rect.rotated +
-		'}},\n');
+			'}},\n');
 		i++;
 	}
 
 	removeTrail(2);
 	push("]}}\n");
 
-    return {
-        width: maxSheetWidth,
-        height: maxSheetHeight,
-        rectangles: packedRectangles,
+	return {
+		width: maxSheetWidth,
+		height: maxSheetHeight,
+		rectangles: packedRectangles,
 		json: closeJson()
-    };
+	};
 }

@@ -1,91 +1,82 @@
 <dialog title="Generate a Texture Atlas">
 
+    <script>
+        function bizzy() {}
+    </script>
 
-<script>
-    function bizzy()
-    {
-    }
-</script>
+    <grid>
+        <columns>
+            <column />
+            <column />
+            <column />
+        </columns>
+        <rows>
+            <row>
+                <flash src="$CONFIGDIRCommands\bta_src\warningBTA.swf" width="42" height="75"></flash>
+                <label value="" />
+                <vbox>
+                    <label value="There's a Texture Atlas already with the following path" />
+                    <label id="pathy" value='"$EXPATH"' />
+                    <label value="Are you sure you want to overwrite it?" />
+                </vbox>
+            </row>
+        </rows>
+    </grid>
 
-<grid>
-    <columns>
-        <column/>
-        <column/>
-        <column/>
-    </columns>
-    <rows>
+    <spacer />
+    <spacer />
+
+    <grid>
+        <columns>
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+            <column />
+        </columns>
+
         <row>
-            <flash src="$CONFIGDIRCommands\bta_src\warningBTA.swf" width="42" height="75"></flash>
             <label value="" />
-            <vbox>
-                <label value="There's a Texture Atlas already with the following path"/>
-                <label id="pathy" value='"$EXPATH"'/>
-                <label value= "Are you sure you want to overwrite it?" />
-            </vbox>
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+            <label value="" />
+
+            <grid>
+                <columns>
+                    <column />
+                    <column />
+                    <column />
+                </columns>
+                <rows>
+                    <row align="right">
+                        <button label="Yes" align="right" oncommand="fl.xmlui.accept()" width="50" />
+                        <label value="" />
+                        <button label="No" align="right" oncommand="fl.xmlui.cancel()" width="50" />
+                    </row>
+                </rows>
+            </grid>
         </row>
-    </rows>
-</grid>
-
-<spacer/>
-<spacer/>
-
-<grid>
-    <columns>
-
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-
-    </columns>
-
-    <row>
-        
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-        <label value="" />
-
-        <grid>
-            <columns>
-                <column/>
-                <column/>
-                <column/>
-            </columns>
-            <rows>
-                <row align="right">
-                    <button label="Yes" align="right" oncommand="fl.xmlui.accept()" width="50"/>
-                    <label value="" />
-                    <button label="No" align="right" oncommand="fl.xmlui.cancel()" width="50"/>
-                </row>
-            </rows>
-        </grid>
-
-    </row>
-</grid>
-
-
+    </grid>
 </dialog>

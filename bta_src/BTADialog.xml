@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <dialog title="Generate a Texture Atlas">
-	
+
 	<flash src="$CONFIGDIRCommands\bta_src\BTAlogo.swf" width="610" height="72"></flash>
-	
+
 	<hbox>
 		<label value=" " />
 		<label value="Texture Atlas Export" id="stuff" control="radioGroup" />
@@ -16,144 +16,143 @@
 			// fl.trace(fl.xmlui.set("ResSld", "123"));
 			fl.trace(fl.xmlui.get("test"));
 		}
-
-		
-
 	</script>
 
-	<property id="test"/>
+	<property id="test" />
 
 	<radiogroup id="radioGroup" groupbox="true">
-
 		<grid>
-
 			<columns>
-				<column/>
-				<column/>
-				
+				<column />
+				<column />
 			</columns>
 			<rows>
 				<row>
 					<grid>
 						<columns>
-							<column/>
-							<column/>
+							<column />
+							<column />
 						</columns>
 						<rows>
 							<row>
-								<label value="Image dimensions:" align="right"/>
+								<label value="Image dimensions:" align="right" />
 								<hbox>
-								<menulist id="imgDims" oncreate="fl.xmlui.setEnabled('imgDims', false);">
-									<menupop>
-										<menuitem label="Automatic Size" value="auto"/>
-									</menupop>
-								</menulist>
-								<vbox>
-									<hbox>
-										<label value= " "/>
-										<checkbox id="OptDimens" checked="true" oncreate="fl.xmlui.setEnabled('OptDimens', false);" label="Optimize dimensions" />
-									</hbox>
-									<label value= " "/>
-								</vbox>
+									<menulist id="imgDims"
+										oncreate="fl.xmlui.setEnabled('imgDims', false);">
+										<menupop>
+											<menuitem label="Automatic Size" value="auto" />
+										</menupop>
+									</menulist>
+									<vbox>
+										<hbox>
+											<label value=" " />
+											<checkbox id="OptDimens" checked="true"
+												oncreate="fl.xmlui.setEnabled('OptDimens', false);"
+												label="Optimize dimensions" />
+										</hbox>
+										<label value=" " />
+									</vbox>
 								</hbox>
 							</row>
 							<row>
-								<label value="Width:" align="right"/>
-								<textbox id="cusWid" label="Your mom" maxlength="4" value="auto" oncreate="fl.xmlui.setEnabled('cusWid', false);" width="50" />
-
-		
+								<label value="Width:" align="right" />
+								<textbox id="cusWid" label="Your mom" maxlength="4" value="auto"
+									oncreate="fl.xmlui.setEnabled('cusWid', false);" width="50" />
 							</row>
 							<row>
-								<label value="Height:" align="right"/>
-								<textbox id="cusHei" label="Your mom" maxlength="4" value="auto" oncreate="fl.xmlui.setEnabled('cusHei', false);" width="50" />
-		
+								<label value="Height:" align="right" />
+								<textbox id="cusHei" label="Your mom" maxlength="4" value="auto"
+									oncreate="fl.xmlui.setEnabled('cusHei', false);" width="50" />
 							</row>
 							<row align="right">
-								<label value="Image Format:" align="right"/>
+								<label value="Image Format:" align="right" />
 								<menulist id="imgFormat" oncreate="imgFormatSet()">
 									<menupop>
-										<menuitem label="PNG 32 bits"/>
-										<menuitem label="PNG 8 bits"/>
+										<menuitem label="PNG 32 bits" />
+										<menuitem label="PNG 8 bits" />
 									</menupop>
 								</menulist>
 							</row>
-							
+
 							<!-- <row><label value=" " /></row> -->
+
 							<row align="right">
-								<label value="Resolution:" align="right"/>
-								<textbox id="ResSld" label="Your mom" maxlength="3" value="$RES" width="50" />
+								<label value="Resolution:" align="right" />
+								<textbox id="ResSld" label="Your mom" maxlength="3" value="$RES"
+									width="50" />
 							</row>
+
 							<row>
 								<!-- <label value="(rasterized only)" align="right"/> -->
-		
 							</row>
-							<row><label value=" " /></row>
+
+							<row>
+								<label value=" " />
+							</row>
 						</rows>
 					</grid>
-					
+
 					<grid>
-		
 						<columns>
-							<column/>
-							<column/>
+							<column />
+							<column />
 						</columns>
 						<rows>
 							<row align="right">
 								<label value="Algorithm: " control="xScale" align="right" />
-								<menulist id="algorithm" oncreate="algorithmSet()" onchange="algorithmSel()">
-										<menupop>
-											<menuitem label="Basic"/>
-											<menuitem label="MaxRects"/>
-										</menupop>
+								<menulist id="algorithm" oncreate="algorithmSet()"
+									onchange="algorithmSel()">
+									<menupop>
+										<menuitem label="Basic" />
+										<menuitem label="MaxRects" />
+									</menupop>
 								</menulist>
 							</row>
 							<row align="right">
 								<label value="Data Format: " control="DFormat" align="right" />
-								<menulist id="DFormat" oncreate="fl.xmlui.setEnabled('DFormat', false);" onchange="dFormatSel();">
-										<menupop>
-
-											
-											<menuitem label="Rasterised JSON" value="raster"/>
-											<menuitem id="mesh" label="Vectorised JSON" value="mesh"/>
-										</menupop>
+								<menulist id="DFormat"
+									oncreate="fl.xmlui.setEnabled('DFormat', false);"
+									onchange="dFormatSel();">
+									<menupop>
+										<menuitem label="Rasterised JSON" value="raster" />
+										<menuitem id="mesh" label="Vectorised JSON" value="mesh" />
+									</menupop>
 								</menulist>
 							</row>
 							<row align="right">
-								<label value=""/>
+								<label value="" />
 								<checkbox id="Rotate" checked="$ROT" label="Rotate" />
 							</row>
 							<row align="right">
-								<label value=""/>
-								<label value=""/>
+								<label value="" />
+								<label value="" />
 							</row>
 							<row align="center">
-								<label value="Shape padding: " control="ShpPad" align="right"/>
+								<label value="Shape padding: " control="ShpPad" align="right" />
 								<textbox id="ShpPad" maxlength="3" value="$SHP" width="50" />
 							</row>
 							<row align="center">
-								<label value="Border padding: " control="BrdPad" align="right"/>
+								<label value="Border padding: " control="BrdPad" align="right" />
 								<textbox id="BrdPad" maxlength="3" value="$BRD" width="50" />
 							</row>
 						</rows>
 					</grid>
 				</row>
 			</rows>
-			
 
 		</grid>
 
-
-		<spacer/>
-		<spacer/>
-		<separator/>
-		<spacer/>
-		<spacer/>
+		<spacer />
+		<spacer />
+		<separator />
+		<spacer />
+		<spacer />
 		<grid>
 			<columns>
-				<column/>
-				<column/>
-				<column/>
-				<column/>
+				<column />
+				<column />
+				<column />
+				<column />
 			</columns>
 
 			<rows>
@@ -161,49 +160,49 @@
 					<vbox>
 						<checkbox id="OptAn" checked="$OPTAN" label="Optimize Animation.json file" />
 
-						<checkbox id="FlatSke" checked="$FLAT" label="Flatten skewed objects to bitmap" />
+						<checkbox id="FlatSke" checked="$FLAT"
+							label="Flatten skewed objects to bitmap" />
 					</vbox>
-					<label value=" "/>
-					<label value=" "/>
-					<button align="center" label="Additional Params" oncommand="addParams();"/>
+					<label value=" " />
+					<label value=" " />
+					<button align="center" label="Additional Params" oncommand="addParams();" />
 				</row>
 			</rows>
 		</grid>
 
-		<spacer/>
-		<spacer/>
-		<spacer/>
+		<spacer />
+		<spacer />
+		<spacer />
 
 	</radiogroup>
-	
-	<spacer/>
 
-	<spacer/>
+	<spacer />
+	<spacer />
 
 	<grid>
 		<columns>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
-			<column/>
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
+			<column />
 		</columns>
 		<rows>
 			<row>
@@ -211,37 +210,38 @@
 			</row>
 			<row>
 				<textbox id="saveBox" value="$FILEURI" />
-				<button align="center" label="Examine" oncommand="getPath();" width="$BWI"/>
-				
+				<button align="center" label="Examine" oncommand="getPath();" width="$BWI" />
 
-				<!-- <choosefile size="40" value="$FILEURI" required="true" pathtype="absolute" id="saveBox" type="save" /> -->
-				<spacer/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<label value=" "/>
-				<spacer/>
+				<!-- <choosefile size="40" value="$FILEURI" required="true" pathtype="absolute"
+				id="saveBox" type="save" /> -->
+
+				<spacer />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<label value=" " />
+				<spacer />
 				<grid>
 					<columns>
-						<column/>
-						<column/>
-						<column/>
+						<column />
+						<column />
+						<column />
 					</columns>
 					<rows>
 						<row>
-							<button label="Export" oncommand="accept()" width="$BWI"/>
+							<button label="Export" oncommand="accept()" width="$BWI" />
 							<label value="" />
-							<button label="Cancel" oncommand="fl.xmlui.cancel()" width="$BWI"/>
+							<button label="Cancel" oncommand="fl.xmlui.cancel()" width="$BWI" />
 						</row>
 					</rows>
 				</grid>
@@ -250,6 +250,4 @@
 	</grid>
 
 	<!-- <flash src="$CONFIGDIRCommands\bta_src\folder stuff.swf" width="65" height="43"></flash> -->
-	
-	
 </dialog>
